@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스페로스페라 크레이프 케이크 고객 후기 기반 마케팅 실무 보고서</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cae;
+            --accent: #ff9a3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --light-gray: #dee2e6;
+            --warning: #ffa94d;
+            --danger: #fa5252;
+            --success: #51cf66;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-meta {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0 10px;
+            color: var(--secondary);
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-title .icon {
+            margin-right: 6px;
+            color: var(--accent);
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .metrics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .metric {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+        }
+
+        .metric-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .chart-section {
+            margin: 30px 0;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            height: 350px;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 10px;
+        }
+
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .data-table tr:hover {
+            background-color: #edf2f7;
+        }
+
+        .keywords-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .keyword-card {
+            flex: 1 1 calc(20% - 15px);
+            min-width: 150px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .keyword-card .count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 5px 0;
+        }
+
+        .keyword-card .term {
+            font-weight: 600;
+        }
+
+        .keyword-card.negative .count {
+            color: var(--danger);
+        }
+
+        .score {
+            font-weight: 600;
+        }
+
+        .score-positive {
+            color: var(--success);
+        }
+
+        .score-neutral {
+            color: var(--gray);
+        }
+
+        .score-negative {
+            color: var(--danger);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .action-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .action-status {
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background-color: var(--light-gray);
+        }
+
+        .status-planning {
+            background-color: #e9ecef;
+            color: var(--gray);
+        }
+
+        .status-progress {
+            background-color: #d0ebff;
+            color: #1971c2;
+        }
+
+        .status-completed {
+            background-color: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .status-blocked {
+            background-color: #ffe3e3;
+            color: #c92a2a;
+        }
+
+        .action-meta {
+            display: flex;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .action-owner, .action-deadline {
+            margin-right: 15px;
+        }
+
+        .task-list {
+            list-style-type: none;
+            margin: 10px 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .task-checkbox {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid var(--gray);
+            display: inline-block;
+            position: relative;
+        }
+
+        .task-checkbox.checked {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-checkbox.checked::after {
+            content: "✓";
+            color: white;
+            position: absolute;
+            top: -4px;
+            left: 2px;
+            font-size: 0.9rem;
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .task-completed {
+            text-decoration: line-through;
+            color: var(--gray);
+        }
+
+        .notes-section {
+            background-color: #fff9db;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .notes-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .timeline {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 4px;
+            background-color: var(--light-gray);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 45px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid var(--primary);
+            z-index: 1;
+            top: 0;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .timeline-content {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            border-radius: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .badge-blue {
+            background-color: #d0ebff;
+            color: #1971c2;
+        }
+
+        .badge-green {
+            background-color: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .badge-orange {
+            background-color: #ffec99;
+            color: #e67700;
+        }
+
+        .badge-red {
+            background-color: #ffe3e3;
+            color: #c92a2a;
+        }
+
+        .bullet-list {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .bullet-list li {
+            margin-bottom: 8px;
+        }
+
+        .summary-box {
+            background-color: #edf2f7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .summary-list {
+            list-style-type: none;
+        }
+
+        .summary-list li {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .summary-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        @media (max-width: 992px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .keyword-card {
+                flex: 1 1 calc(50% - 15px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>스페로스페라 크레이프 케이크 고객 후기 기반 마케팅 실무 보고서</h1>
+                <p>고객 후기 데이터 분석 및 실행 계획</p>
+            </div>
+            <div class="header-meta">
+                <p>작성일: 2025년 3월 20일</p>
+                <p>담당: 마케팅팀 / 데이터분석팀</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 핵심 지표 카드 -->
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-title"><span class="icon">★</span> 고객 만족도</div>
+                <div class="card-value">3.64/4.0</div>
+                <div class="card-description">460건의 후기 평균 별점</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title"><span class="icon">⚠</span> 불만족 비중</div>
+                <div class="card-value">10%</div>
+                <div class="card-description">1-2점 후기 비율 (목표: 5%)</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title"><span class="icon">🎂</span> 주력 시장</div>
+                <div class="card-value">85%+</div>
+                <div class="card-description">생일 선물 용도로 구매</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title"><span class="icon">🚚</span> 배송 이슈</div>
+                <div class="card-value">59%</div>
+                <div class="card-description">낮은 별점의 주요 원인</div>
+            </div>
+        </div>
+
+        <!-- 진행 중인 메트릭 -->
+        <h2>🎯 핵심 지표 트래킹</h2>
+        <div class="metrics-section">
+            <div class="metric">
+                <div class="metric-title">고객 불만족 개선 목표</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 50%; background-color: #ffa94d;"></div>
+                </div>
+                <div class="progress-label">
+                    <span>현재 10%</span>
+                    <span>목표 5%</span>
+                </div>
+                <p style="font-size: 0.85rem; margin-top: 10px;">배송·포장 이슈 개선 시 달성 가능성 높음</p>
+            </div>
+            
+            <div class="metric">
+                <div class="metric-title">제품별 판매 비중</div>
+                <div style="font-size: 0.85rem; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>밀크</span>
+                        <span>48.5%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 48.5%; background-color: #4a6fa5;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>블루베리</span>
+                        <span>26.5%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 26.5%; background-color: #805ad5;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>딸기</span>
+                        <span>17.8%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 17.8%; background-color: #f56565;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>초코</span>
+                        <span>7.0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 7.0%; background-color: #744210;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 후기 데이터 분석 -->
+        <h2>📊 후기 상세 분석</h2>
+        <div class="tabs">
+            <div class="tab active" data-tab="feedback-overview">개요</div>
+            <div class="tab" data-tab="feedback-sentiment">감성 분석</div>
+            <div class="tab" data-tab="feedback-keywords">키워드 분석</div>
+        </div>
+
+        <div class="tab-content active" id="feedback-overview">
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">별점 분포</div>
+                    <canvas id="ratingChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">제품별 판매 비중 및 평균 별점</div>
+                    <canvas id="productChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">선물 주체 분석</div>
+                    <canvas id="giftSourceChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">주요 불만 요인 분석</div>
+                    <canvas id="complaintChart"></canvas>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-title">핵심 발견 사항</div>
+                <ul class="summary-list">
+                    <li>총 460건의 후기 중 1-2점대 후기는 10% (46건)로, 불만족 고객 비율 상당</li>
+                    <li>배송·포장 문제가 낮은 별점의 가장 큰 원인 (59%)이며, 맛·품질 불만이 그 다음 (28%)</li>
+                    <li>밀크맛과 딸기맛이 가장 높은 평점 받음 (3.67, 3.68점)</li>
+                    <li>초코맛은 "너무 달다", "느끼하다" 피드백이 많아 개선 필요</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-content" id="feedback-sentiment">
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">제품별 감성 분석</div>
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">불만 이슈별 빈도수</div>
+                    <canvas id="issuesChart"></canvas>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>제품</th>
+                        <th>긍정 표현</th>
+                        <th>부정 표현</th>
+                        <th>감성 지수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>밀크 (48.5%)</td>
+                        <td>"부드럽다", "맛있다", "적당히 달다"</td>
+                        <td>"느끼하다"</td>
+                        <td class="score score-positive">+68%</td>
+                    </tr>
+                    <tr>
+                        <td>블루베리 (26.5%)</td>
+                        <td>"상큼하다", "맛있다"</td>
+                        <td>"흘러내림", "파손"</td>
+                        <td class="score score-positive">+52%</td>
+                    </tr>
+                    <tr>
+                        <td>딸기 (17.8%)</td>
+                        <td>"맛있다", "향이 좋다"</td>
+                        <td>특이사항 없음</td>
+                        <td class="score score-positive">+72%</td>
+                    </tr>
+                    <tr>
+                        <td>초코 (7.0%)</td>
+                        <td>"초콜릿 맛이 진하다"</td>
+                        <td>"너무 달다", "느끼하다"</td>
+                        <td class="score score-neutral">+24%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-content" id="feedback-keywords">
+            <h3>👍 긍정 키워드 TOP 5</h3>
+            <div class="keywords-container">
+                <div class="keyword-card">
+                    <div class="term">맛있다</div>
+                    <div class="count">312회</div>
+                </div>
+                <div class="keyword-card">
+                    <div class="term">부드럽다</div>
+                    <div class="count">145회</div>
+                </div>
+                <div class="keyword-card">
+                    <div class="term">아이스크림 같다</div>
+                    <div class="count">112회</div>
+                </div>
+                <div class="keyword-card">
+                    <div class="term">달지 않다</div>
+                    <div class="count">95회</div>
+                </div>
+                <div class="keyword-card">
+                    <div class="term">선물하기 좋다</div>
+                    <div class="count">78회</div>
+                </div>
+            </div>
+
+            <h3>👎 부정 키워드 TOP 5</h3>
+            <div class="keywords-container">
+                <div class="keyword-card negative">
+                    <div class="term">녹았다/녹음</div>
+                    <div class="count">27회</div>
+                </div>
+                <div class="keyword-card negative">
+                    <div class="term">파손</div>
+                    <div class="count">14회</div>
+                </div>
+                <div class="keyword-card negative">
+                    <div class="term">늦다/지연</div>
+                    <div class="count">11회</div>
+                </div>
+                <div class="keyword-card negative">
+                    <div class="term">탄산맛</div>
+                    <div class="count">9회</div>
+                </div>
+                <div class="keyword-card negative">
+                    <div class="term">느끼하다</div>
+                    <div class="count">8회</div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <div class="notes-title">키워드 인사이트</div>
+                <ul class="bullet-list">
+                    <li>부드러운 식감과 아이스크림과 유사한 식감이 주요 강점으로 보임</li>
+                    <li>녹음/파손 문제는 드라이아이스와 포장재 개선으로 해결 가능성 높음</li>
+                    <li>"느끼하다"는 표현은 주로 초코맛에 집중되어 레시피 개선 필요</li>
+                    <li>"탄산맛"은 드라이아이스 접촉으로 인한 이슈로 포장 개선 필요</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 액션 플랜 -->
+        <h2>📝 실행 계획 (액션 플랜)</h2>
+        <div class="tabs">
+            <div class="tab active" data-tab="action-product">제품 개선</div>
+            <div class="tab" data-tab="action-delivery">배송·포장</div>
+            <div class="tab" data-tab="action-marketing">마케팅 전략</div>
+        </div>
+
+        <div class="tab-content active" id="action-product">
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">저당(低糖) 라인 개발</div>
+                    <div class="action-status status-progress">진행 중</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 신제품개발팀 김미영</div>
+                    <div class="action-deadline">마감: 2025년 4월 15일</div>
+                </div>
+                <div class="action-description">
+                    <p>현재 제품 대비 당도 20~30% 낮춘 제품 라인 개발로 느끼함과 칼로리 부담 완화</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">레시피 초안 개발 (3/10)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">내부 시식 평가 진행 (3/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">제품 출시 준비 (4/15)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">실무 노트</div>
+                    <p>초기 시식 평가에서 당도 30% 감소 시 맛 만족도가 유지되면서 느끼함이 크게 감소했습니다. 다만 식감 측면에서 조금 더 보완이 필요하며, R&D팀과 협업 중입니다.</p>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">탄산맛 방지 포장 개선</div>
+                    <div class="action-status status-planning">계획 단계</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 제품관리팀 박준호</div>
+                    <div class="action-deadline">마감: 2025년 4월 5일</div>
+                </div>
+                <div class="action-description">
+                    <p>드라이아이스가 케이크와 직접 닿지 않도록 격벽 설치 및 포장 매뉴얼 개선</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">격벽 디자인 설계 (3/5)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">포장재 샘플 제작 (3/25)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">테스트 배송 진행 (3/30)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">최종 포장 매뉴얼 확정 (4/5)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">해동·섭취 가이드 개선</div>
+                    <div class="action-status status-progress">진행 중</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 콘텐츠팀 이지연</div>
+                    <div class="action-deadline">마감: 2025년 3월 30일</div>
+                </div>
+                <div class="action-description">
+                    <p>최적의 맛을 위한 해동 시간 및 보관 방법 안내 매뉴얼 개발 및 적용</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">해동 시간별 맛 테스트 (3/8)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">최적 해동 시간 도출 (3/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">안내문 디자인 (3/25)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">인쇄 및 패키지 적용 (3/30)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">주요 발견 사항</div>
+                    <p>약 2~3시간 냉장 해동 시 부드러운 크림 식감이 가장 좋으며, 살짝 얼린 상태(1시간 해동)에서는 아이스크림 케이크와 유사한 식감을 선호하는 고객층도 있음. 두 가지 옵션을 모두 안내할 예정.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="action-delivery">
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">냉동 포장 강화</div>
+                    <div class="action-status status-progress">진행 중</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 물류팀 최성민</div>
+                    <div class="action-deadline">마감: 2025년 4월 10일</div>
+                </div>
+                <div class="action-description">
+                    <p>아이스팩 증량 및 고성능 스티로폼 박스 도입으로 배송 중 녹음 문제 해결</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">포장재 업체 선정 (3/5)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">아이스팩 용량 테스트 (3/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">여름철 특별 포장 설계 (3/25)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">테스트 배송 진행 (4/1)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">최종 포장 매뉴얼 확정 (4/10)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">중간 결과</div>
+                    <p>기존 대비 아이스팩 용량 50% 증가, 스티로폼 두께 25% 증가 시 36시간까지 냉동 상태 유지 가능. 여름철(6~8월)에는 추가 아이스팩 1개 더 포함 예정.</p>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">택배사 SLA(서비스 계약) 개선</div>
+                    <div class="action-status status-planning">계획 단계</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 물류팀 박지영</div>
+                    <div class="action-deadline">마감: 2025년 4월 20일</div>
+                </div>
+                <div class="action-description">
+                    <p>정시배송률 95% 이상 목표 계약 체결 및 배송 지연 시 보상 체계 수립</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">택배사 미팅 진행 (3/25)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">계약 조건 협상 (4/5)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">SLA 계약 체결 (4/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">내부 교육 및 적용 (4/20)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">배송 알림 시스템 도입</div>
+                    <div class="action-status status-blocked">차단됨</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: IT팀 김태현</div>
+                    <div class="action-deadline">마감: 2025년 5월 1일</div>
+                </div>
+                <div class="action-description">
+                    <p>배송 출발, 도착 예정, 배송 완료 시 문자 알림 시스템 구축</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">시스템 기획 (4/1)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">택배사 API 연동 (4/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">테스트 및 디버깅 (4/25)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">시스템 오픈 (5/1)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">차단 사유</div>
+                    <p>IT팀 리소스 부족으로 일정 지연 예상. 4월 중순 이후 가능할 것으로 보임. 대안으로 택배사 자체 알림 서비스 활용 방안 검토 중.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="action-marketing">
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">카톡 선물하기 기획전</div>
+                    <div class="action-status status-planning">계획 단계</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: 디지털마케팅팀 정소연</div>
+                    <div class="action-deadline">마감: 2025년 4월 15일</div>
+                </div>
+                <div class="action-description">
+                    <p>생일·감사 테마 기획전 및 후기 작성 시 적립금 증정 프로모션</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">기획전 콘셉트 확정 (3/10)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">배너 및 상세페이지 디자인 (3/30)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">쿠폰 발행 및 적립금 세팅 (4/5)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">기획전 오픈 (4/15)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">프로모션 내용</div>
+                    <ul class="bullet-list">
+                        <li>전 제품 10% 할인 쿠폰 (기간 한정)</li>
+                        <li>포토 후기 작성 시 3,000원 적립금 추가 지급</li>
+                        <li>생일/감사 테마별 맞춤 메시지 카드 제공</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">SNS 바이럴 캠페인</div>
+                    <div class="action-status status-progress">진행 중</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: SNS마케팅팀 홍지수</div>
+                    <div class="action-deadline">마감: 2025년 5월 15일</div>
+                </div>
+                <div class="action-description">
+                    <p>인스타그램/블로그 "내 생일 크레이프" 인증샷 이벤트 진행</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">캠페인 기획 (3/5)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">인플루언서 섭외 (3/15)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">해시태그 및 이벤트 페이지 제작 (3/30)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">이벤트 오픈 및 운영 (4/15~5/15)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">이벤트 내용</div>
+                    <ul class="bullet-list">
+                        <li>해시태그: #천겹케이크 #크레이프생일 #스페로스페라</li>
+                        <li>인증샷 100명 추첨하여 저당 라인 신제품 선물</li>
+                        <li>인플루언서 10명 사전 체험단 운영 중</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="action-item">
+                <div class="action-header">
+                    <div class="action-title">B2B 마케팅 확대</div>
+                    <div class="action-status status-planning">계획 단계</div>
+                </div>
+                <div class="action-meta">
+                    <div class="action-owner">담당: B2B영업팀 이상현</div>
+                    <div class="action-deadline">마감: 2025년 5월 30일</div>
+                </div>
+                <div class="action-description">
+                    <p>기업용 대량 주문 패키지 및 맞춤 브랜딩 서비스 도입</p>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">기업용 패키지 구성 확정 (4/10)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">맞춤 패키지 샘플 제작 (4/20)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">B2B 제안서 및 카탈로그 제작 (5/10)</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-text">기업 고객 대상 설명회 (5/30)</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <div class="notes-title">타겟 고객</div>
+                    <ul class="bullet-list">
+                        <li>직원 100명 이상 기업 HR팀 (사내 생일 선물용)</li>
+                        <li>웨딩·이벤트 기획사 (답례품용)</li>
+                        <li>기업 행사 케이터링 서비스</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 일정계획 -->
+        <h2>📅 프로젝트 일정</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-date">2025년 3월 (현재)</div>
+                <div class="timeline-content">
+                    <ul class="bullet-list">
+                        <li>저당 라인 레시피 최종 확정</li>
+                        <li>포장 개선 테스트 진행</li>
+                        <li>해동·섭취 가이드 제작</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-date">2025년 4월</div>
+                <div class="timeline-content">
+                    <ul class="bullet-list">
+                        <li>저당 라인 시범 생산 및 품질 테스트</li>
+                        <li>택배사 SLA 계약 체결</li>
+                        <li>카톡 선물하기 기획전 오픈</li>
+                        <li>SNS 바이럴 캠페인 시작</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-date">2025년 5월</div>
+                <div class="timeline-content">
+                    <ul class="bullet-list">
+                        <li>저당 라인 정식 출시</li>
+                        <li>배송 알림 시스템 오픈</li>
+                        <li>B2B 마케팅 본격 시작</li>
+                        <li>SNS 이벤트 마무리 및 결과 분석</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-date">2025년 6월</div>
+                <div class="timeline-content">
+                    <ul class="bullet-list">
+                        <li>여름철 특별 포장 시스템 도입</li>
+                        <li>전체 프로젝트 중간 평가</li>
+                        <li>개선 효과 측정 및 보고</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 및 모니터링 -->
+        <h2>📊 KPI 및 모니터링 계획</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>지표</th>
+                    <th>현재 수치</th>
+                    <th>목표 수치</th>
+                    <th>측정 주기</th>
+                    <th>담당자</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>낮은 별점(1-2점) 비중</td>
+                    <td>10%</td>
+                    <td>5% 이하</td>
+                    <td>월별</td>
+                    <td>CS팀 김현우</td>
+                </tr>
+                <tr>
+                    <td>재구매율</td>
+                    <td>18%</td>
+                    <td>25% 이상</td>
+                    <td>분기별</td>
+                    <td>데이터분석팀 정미나</td>
+                </tr>
+                <tr>
+                    <td>저당 라인 판매 비중</td>
+                    <td>-</td>
+                    <td>출시 후 10% 이상</td>
+                    <td>출시 후 3개월</td>
+                    <td>마케팅팀 윤서연</td>
+                </tr>
+                <tr>
+                    <td>배송 불만(녹음·파손) 발생</td>
+                    <td>27건/월</td>
+                    <td>10건/월 이하</td>
+                    <td>월별</td>
+                    <td>물류팀 최성민</td>
+                </tr>
+                <tr>
+                    <td>SNS 해시태그 언급량</td>
+                    <td>월 150건</td>
+                    <td>월 300건 이상</td>
+                    <td>월별</td>
+                    <td>SNS마케팅팀 홍지수</td>
+                </tr>
+                <tr>
+                    <td>B2B 판매 비중</td>
+                    <td>3%</td>
+                    <td>10% 이상</td>
+                    <td>분기별</td>
+                    <td>B2B영업팀 이상현</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="notes-section">
+            <div class="notes-title">모니터링 체계</div>
+            <ul class="bullet-list">
+                <li><strong>주간 보고:</strong> 각 담당자별 진행 상황 및 이슈 공유 (매주 월요일)</li>
+                <li><strong>월간 리뷰:</strong> KPI 지표 측정 및 평가, 개선점 도출 (매월 첫째 주 금요일)</li>
+                <li><strong>분기 평가:</strong> 전체 프로젝트 성과 평가 및 방향성 재점검 (분기 말)</li>
+            </ul>
+        </div>
+
+        <!-- 다음 단계 -->
+        <h2>⚡ 빠른 실행 우선순위</h2>
+        <div class="summary-box">
+            <div class="summary-title">중요도 및 긴급성 기준 우선순위</div>
+            <ol class="bullet-list">
+                <li><strong>포장 개선 및 냉동 보존력 강화</strong> - 배송 중 녹음/파손 문제가 가장 시급한 이슈</li>
+                <li><strong>저당 라인 출시 준비</strong> - 맛과 품질 이슈 해결을 위한 핵심 프로젝트</li>
+                <li><strong>해동·섭취 가이드 적용</strong> - 낮은 비용으로 빠르게 적용 가능한 개선점</li>
+                <li><strong>카톡 선물하기 기획전</strong> - 주요 판매 채널인 만큼 빠른 프로모션 필요</li>
+                <li><strong>택배사 SLA 체결</strong> - 배송 품질 안정화를 위한 제도적 장치</li>
+            </ol>
+        </div>
+
+        <div class="notes-section">
+            <div class="notes-title">리소스 배분 제안</div>
+            <ul class="bullet-list">
+                <li>R&D 예산: 저당 라인 개발에 집중 투자 필요 (약 2,000만원)</li>
+                <li>포장 개선: 스티로폼 및 아이스팩 업그레이드 (약 1,500만원)</li>
+                <li>마케팅 예산: 기획전 및 SNS 이벤트 (약 2,500만원)</li>
+                <li>시스템 개발: 배송 알림 시스템 (약 1,000만원)</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 스페로스페라 마케팅팀 | 문의: marketing@spherosphera.com</p>
+        </div>
+    </div>
+
+    <script>
+        // 탭 기능
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // 현재 활성화된 탭 비활성화
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // 선택한 탭 활성화
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 체크리스트 기능
+        const taskItems = document.querySelectorAll('.task-item');
+        taskItems.forEach(item => {
+            const checkbox = item.querySelector('.task-checkbox');
+            const taskText = item.querySelector('.task-text');
+            
+            // 체크박스 클릭 이벤트
+            checkbox.addEventListener('click', () => {
+                checkbox.classList.toggle('checked');
+                taskText.classList.toggle('task-completed');
+                
+                // 로컬 스토리지에 상태 저장
+                const taskId = item.closest('.action-item').querySelector('.action-title').textContent + '_' + taskText.textContent;
+                localStorage.setItem(taskId, checkbox.classList.contains('checked'));
+            });
+            
+            // 저장된 상태 불러오기
+            const taskId = item.closest('.action-item').querySelector('.action-title').textContent + '_' + taskText.textContent;
+            const isChecked = localStorage.getItem(taskId) === 'true';
+            if (isChecked) {
+                checkbox.classList.add('checked');
+                taskText.classList.add('task-completed');
+            }
+        });
+
+        // 차트 생성
+        const createCharts = function() {
+            // 별점 분포 차트
+            const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+            new Chart(ratingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['4점 (79%)', '3점 (11%)', '2점 (5%)', '1점 (5%)'],
+                    datasets: [{
+                        label: '후기 수',
+                        data: [363, 51, 23, 23],
+                        backgroundColor: [
+                            '#51cf66',
+                            '#4a6fa5',
+                            '#ffa94d',
+                            '#fa5252'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 제품별 판매 비중 및 별점 차트
+            const productCtx = document.getElementById('productChart').getContext('2d');
+            new Chart(productCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['밀크', '블루베리', '딸기', '초코'],
+                    datasets: [
+                        {
+                            label: '판매 비중(%)',
+                            data: [48.5, 26.5, 17.8, 7.0],
+                            backgroundColor: '#4a6fa5',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '평균 별점',
+                            data: [3.67, 3.59, 3.68, 3.50],
+                            type: 'line',
+                            borderColor: '#ff9a3c',
+                            borderWidth: 2,
+                            fill: false,
+                            pointBackgroundColor: '#ff9a3c',
+                            pointRadius: 4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '판매 비중(%)'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '평균 별점'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 선물 주체 분석 차트
+            const giftSourceCtx = document.getElementById('giftSourceChart').getContext('2d');
+            new Chart(giftSourceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['본인', '가족', '친구', '연인', '기타'],
+                    datasets: [{
+                        data: [15, 35, 25, 15, 10],
+                        backgroundColor: [
+                            '#4a6fa5',
+                            '#6b8cae',
+                            '#ff9a3c',
+                            '#f8f9fa',
+                            '#dee2e6'
+                        ]
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // 주요 불만 요인 분석 차트
+            const complaintCtx = document.getElementById('complaintChart').getContext('2d');
+            new Chart(complaintCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['배송·포장', '맛·품질', '가격', '서비스', '기타'],
+                    datasets: [{
+                        label: '불만 건수',
+                        data: [27, 13, 5, 3, 2],
+                        backgroundColor: '#fa5252'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 제품별 감성 분석 차트
+            const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+            new Chart(sentimentCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['맛', '향', '식감', '가격', '포장', '서비스'],
+                    datasets: [
+                        {
+                            label: '밀크',
+                            data: [90, 85, 95, 80, 75, 85],
+                            borderColor: '#4a6fa5',
+                            backgroundColor: 'rgba(74, 111, 165, 0.2)'
+                        },
+                        {
+                            label: '블루베리',
+                            data: [85, 90, 80, 75, 70, 80],
+                            borderColor: '#805ad5',
+                            backgroundColor: 'rgba(128, 90, 213, 0.2)'
+                        },
+                        {
+                            label: '딸기',
+                            data: [95, 95, 85, 80, 75, 85],
+                            borderColor: '#f56565',
+                            backgroundColor: 'rgba(245, 101, 101, 0.2)'
+                        },
+                        {
+                            label: '초코',
+                            data: [70, 75, 80, 75, 70, 80],
+                            borderColor: '#744210',
+                            backgroundColor: 'rgba(116, 66, 16, 0.2)'
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // 불만 이슈별 빈도수 차트
+            const issuesCtx = document.getElementById('issuesChart').getContext('2d');
+            new Chart(issuesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['녹음', '파손', '배송지연', '맛불만', '가격불만', '기타'],
+                    datasets: [{
+                        label: '건수',
+                        data: [27, 14, 11, 8, 5, 3],
+                        backgroundColor: '#ffa94d'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+        // 페이지 로드 시 차트 생성
+        document.addEventListener('DOMContentLoaded', createCharts);
+    </script>
+</body>
+</html>
